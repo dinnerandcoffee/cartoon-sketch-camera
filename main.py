@@ -1,7 +1,7 @@
-from src.camera_filter import *
+from src.camera_filter import cartoon_filter, pencil_sketch
+import cv2, sys
 
 if __name__ == "__main__":
-    # 프로그램 시작
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
         print('Video open failed!')

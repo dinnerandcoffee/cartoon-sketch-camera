@@ -9,4 +9,4 @@ OpenCV 기반의 실시간 웹캠 필터 프로그램입니다.
 ## 🚀 실행 방법
 ```bash
 pip install -r requirements.txt
-python camera_filter.py
+python main.py

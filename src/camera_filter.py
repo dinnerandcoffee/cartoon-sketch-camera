@@ -31,43 +31,38 @@ def pencil_sketch(img):
     return dst
 
 # -----------------------------
-# 웹캠 열기
+# 실행 함수 (선택)
 # -----------------------------
-cap = cv2.VideoCapture(0)
+def run_camera():
+    cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+        print('Video open failed!')
+        sys.exit()
 
-if not cap.isOpened():
-    print('Video open failed!')
-    sys.exit()
+    cam_mode = 0  # 0: 기본, 1: 카툰, 2: 연필 스케치
 
-cam_mode = 0  # 0: 기본, 1: 카툰, 2: 연필 스케치
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-# -----------------------------
-# 메인 루프
-# -----------------------------
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        break
+        if cam_mode == 1:
+            frame = cartoon_filter(frame)
+        elif cam_mode == 2:
+            frame = pencil_sketch(frame)
+            frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
 
-    if cam_mode == 1:
-        frame = cartoon_filter(frame)
-    elif cam_mode == 2:
-        frame = pencil_sketch(frame)
-        frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
+        cv2.imshow('Camera Filter', frame)
 
-    # 화면 출력
-    cv2.imshow('Camera Filter', frame)
+        key = cv2.waitKey(1)
+        if key == 27:  # ESC 종료
+            break
+        elif key == ord(' '):  # 스페이스바로 필터 전환
+            cam_mode = (cam_mode + 1) % 3
 
-    key = cv2.waitKey(1)
-    if key == 27:  # ESC 종료
-        break
-    elif key == ord(' '):  # 스페이스바로 필터 전환
-        cam_mode += 1
-        if cam_mode == 3:
-            cam_mode = 0
+    cap.release()
+    cv2.destroyAllWindows()
 
-# -----------------------------
-# 종료
-# -----------------------------
-cap.release()
-cv2.destroyAllWindows()
+# 모듈 단독 실행 시에만 카메라 동작 (임포트 시에는 동작 X)
+if __name__ == "__main__":
+    run_camera()
